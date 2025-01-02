@@ -47,7 +47,7 @@ db.data.updateOne/UpdateMany({name:"Shoes"},{$set:{description:{type:"Winter",we
 # Updates documents where name is "Phone", setting the type to an array of values
 db.data.updateOne/UpdateMany({name:"Phone"},{$set:{type:["A","AAA+"]}})
 
-# Finds the first document where name is "Phone" and returns its type
+# Finds the first document where name is "Phone" and returns its fields
 db.data.findOne({name:"Phone"}).type
 
 # Finds documents where status.type is "ios"
