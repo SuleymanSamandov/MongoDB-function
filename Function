@@ -1,0 +1,147 @@
+# Lists all databases
+show dbs
+
+# Switches to or creates 'data' database
+use data
+
+# Inserts a single document into the 'data' collection
+db.data.insertOne({name:"Carrot",category:"Vegetables",price: 70})
+
+# Inserts multiple documents into the 'data' collection
+db.data.insertMany([
+  {name:"Carrot",category:"Vegetables",price: 70},
+  {name:"Snickers",category:"Snacks",price: 5},
+  {name:"Chair",category:"Furniture",price: 100}
+])
+
+# Retrieves all documents from the 'data' collection
+db.data.find()
+
+# Retrieves all documents from the 'data' collection and formats them
+db.data.find().pretty()
+
+# Deletes a single document where the name is "Chair"
+db.data.deleteOne({name:"Chair"})
+
+# Deletes multiple documents where the category is "Clothing"
+db.data.deleteMany({category:"Clothing"})
+
+# Updates a single document where name is "Shoes", setting the marker to "Delete"
+db.data.updateOne({name:"Shoes"}, {$set:{marker:"Delete"}})
+
+# Updates multiple documents in the 'product' collection where category is "Clothing", setting the price to 150
+db.product.updateMany({category: "Clothing"}, { $set: { price: 150 } })
+
+# Finds documents where name is "Clothing"
+db.data.find({name:"Clothing"})
+
+# Finds documents where name is "Phone" and prints their type
+db.data.find({name:"Phone"}).forEach(doc => print(doc.type))
+
+# Finds documents where price is greater than 50
+db.data.find({price:{$gt:50}})
+
+# Updates documents where name is "Shoes", setting description with type "Winter" and weight 45
+db.data.updateOne/UpdateMany({name:"Shoes"},{$set:{description:{type:"Winter",weight:45}}})
+
+# Updates documents where name is "Phone", setting the type to an array of values
+db.data.updateOne/UpdateMany({name:"Phone"},{$set:{type:["A","AAA+"]}})
+
+# Finds the first document where name is "Phone" and returns its type
+db.data.findOne({name:"Phone"}).type
+
+# Finds documents where status.type is "ios"
+db.data.find({"status.type":"ios"})
+
+# Performs a lookup to join 'product' collection with 'category' collection
+db.product.aggregate([{$lookup:{from:"category",localField:"category_id",foreignField:"_id",as:"category_info"}}])
+
+# Inserts multiple documents with custom IDs into the 'data' collection
+db.data.insertMany([{_id:"yoga",name:"Yoga"},{_id:"cooking",name:"Cooking"},{_id:"hiking",name:"Hiking"}],{ordered:false or true})
+
+# Inserts a document with write concern 'majority' into the 'data' collection
+db.data.insertOne({name:"Lego",age:18},{writeConcern:{w:"majority"}})
+
+# Inserts a document with write concern 'w:1' into the 'data' collection
+db.data.insertOne({name:"Lego",age:18},{writeConcern:{w:1}})
+
+# Inserts a document with write concern 'w:0' into the 'data' collection
+db.data.insertOne({name:"Lego",age:18},{writeConcern:{w:0}})
+
+# Inserts multiple documents with write concern 'majority' and 'j:false' into the 'data' collection
+db.data.insertMany({name:"Lego",age:18},{writeConcern:{w:"majority",j:false or true}})
+
+# Inserts multiple documents with write concern 'majority' and timeout into the 'data' collection
+db.data.insertMany({name:"Lego",age:18},{writeConcern:{w:"majority",j:false,wtimeOut:1}})
+
+# Finds employees with age less than or equal to 30
+db.employees.find({age:{$lte:30}})
+
+# Finds employees with age less than 30
+db.employees.find({age:{$lt:30}})
+
+# Finds employees with age in the list [25, 30, 40]
+db.employees.find({age:{$in:[25,30,40]}})
+
+# Finds employees with age not in the list [25, 30, 40]
+db.employees.find({age:{$nin:[25,30,40]}})
+
+# Finds employees where age is greater than or equal to 28 or name is "John"
+db.employees.find({$or:[{age:{$gte:28}},{name:"John"}]})
+
+# Finds employees where age is not greater than or equal to 28 and name is not "John"
+db.employees.find({$nor:[{age:{$gte:28}},{name:"John"}]})
+
+# Finds employees where age is greater than 30 and name is "John"
+db.employees.find({$and:[{age:{$gt:30}},{name:"John"}]})
+
+# Finds employees where age is not equal to 35
+db.employees.find({age:{$not:{$ne:35}}})
+
+# Finds employees where age is not equal to 35 (alternative)
+db.employees.find({age:{$not:{$eq:35}}})
+
+# Finds employees where age is not 35
+db.employees.find({age:{$ne:35}})
+
+# Finds employees where age field exists
+db.employees.find({age:{$exists:true}})
+
+# Finds employees where the 'name' field is of type string
+db.employees.find({name:{$type:["string"]}})
+
+# Finds employees where the name matches a regex pattern
+db.employees.find({name:{$regex:/John Baker/}})
+
+# Finds employees where totalSales is greater than salary
+db.employees.find({$expr:{$gt:["totalSales","salary"]}})
+
+# Finds employees where 'tool' array has exactly 3 elements
+db.employees.find({tool:{$size:3}})
+
+# Adds a 'category' field based on salary condition (High or Low)
+db.employees.aggregate({$addFields:{category:{$cond:{if:{$gte:["salary",69000]},then:"High",else:"Low"}}}})
+
+# Finds employees where 'tool' array contains both "A" and "B"
+db.employees.find({tool:{$all:["A","B"]}})
+
+# Finds employees where description array contains an object with type "A" and color "#00000"
+db.employees.find({description:{$elemMatch:{type:"A",color:"#00000"}}})
+
+# Finds employee with specific ObjectId and slices the type field
+db.employees.find({_id:ObjectId('67710705e8b989a3d3893c01')},{type:{$slice:-1}})
+
+# Updates employee salary to be at least 79000
+db.employees.updateOne({_id:ObjectId('67710705e8b989a3d3893c01')},{$min:{salary:79000}})
+
+# Updates employee salary to be at most 79000
+db.employees.updateOne({_id:ObjectId('67710705e8b989a3d3893c01')},{$max:{salary:79000}})
+
+# Multiplies employee salary by 1.8
+db.employees.updateOne({_id:ObjectId('67710705e8b989a3d3893c01')},{$mul:{salary:1.8}})
+
+# Removes the 'fields' field from the employee document
+db.employees.updateOne({_id:ObjectId('67710705e8b989a3d3893c01')},{$unset:{fields:""}})
+
+# Renames 'totalsales' field to 'totalSales' in all employee documents
+db.employees.updateMany({},{$rename:{totalsales:"totalSales"}})
